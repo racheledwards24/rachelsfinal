@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Where’s That Hike?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f8f4;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        h1 {
+            margin-bottom: 10px;
+        }
+        
+        #quiz-box {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        #fact {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .option-btn {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .option-btn:hover {
+            background-color: #388e3c;
+        }
+        
+        #feedback {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        #score {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🌄 Where’s That Hike?</h1>
+    <div id="quiz-box">
+        <p id="fact">Loading...</p>
+        <div id="options"></div>
+        <p id="feedback"></p>
+        <p id="score">Score: 0</p>
+    </div>
+
+    <script>
+        const hikes = [{
+            fact: "This trail leads to a narrow ridge with 1,000-foot drop-offs on both sides. It's famous in southern Utah.",
+            options: ["Angels Landing – Zion, UT", "Half Dome – Yosemite, CA", "Bright Angel Trail – Grand Canyon, AZ"],
+            answer: "Angels Landing – Zion, UT"
+        }, {
+            fact: "This hike ends at a turquoise alpine lake surrounded by the Valley of the Ten Peaks in Canada.",
+            options: ["Lake Louise – Banff, AB", "Moraine Lake – Banff, AB", "Emerald Lake – Yoho, BC"],
+            answer: "Moraine Lake – Banff, AB"
+        }, {
+            fact: "This granite dome in California requires cables for the final climb and offers epic views of Yosemite Valley.",
+            options: ["Mount Whitney – CA", "Half Dome – Yosemite, CA", "El Capitan – Yosemite, CA"],
+            answer: "Half Dome – Yosemite, CA"
+        }, {
+            fact: "This Hawaiian trail descends into a lush crater filled with native plants and seabirds.",
+            options: ["Kalalau Trail – Kauai", "Kīlauea Iki Trail – Big Island", "Diamond Head Trail – Oahu"],
+            answer: "Kīlauea Iki Trail – Big Island"
+        }];
+
+        let current = 0;
+        let score = 0;
+
+        const fact = document.getElementById("fact");
+        const optionsDiv = document.getElementById("options");
+        const feedback = document.getElementById("feedback");
+        const scoreDisplay = document.getElementById("score");
+
+        function loadQuestion() {
+            const hike = hikes[current];
+            fact.textContent = hike.fact;
+            feedback.textContent = "";
+            optionsDiv.innerHTML = "";
+            hike.options.forEach(option => {
+                const btn = document.createElement("button");
+                btn.textContent = option;
+                btn.className = "option-btn";
+                btn.onclick = () => handleAnswer(option);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(selected) {
+            const correct = hikes[current].answer;
+            if (selected === correct) {
+                feedback.textContent = "✅ Correct!";
+                score++;
+            } else {
+                feedback.textContent = `❌ Incorrect! The answer was: ${correct}`;
+            }
+            scoreDisplay.textContent = "Score: " + score;
+
+            current++;
+            if (current < hikes.length) {
+                setTimeout(loadQuestion, 1800);
+            } else {
+                setTimeout(() => {
+                    feedback.textContent = `🎉 You finished! Final score: ${score} / ${hikes.length}`;
+                    fact.textContent = "";
+                    optionsDiv.innerHTML = '<button class="option-btn" onclick="restart()">Play Again</button>';
+                }, 1800);
+            }
+        }
+
+        function restart() {
+            current = 0;
+            score = 0;
+            scoreDisplay.textContent = "Score: 0";
+            loadQuestion();
+        }
+
+        loadQuestion();
+    </script>
+
+</body>
+
+</html>
